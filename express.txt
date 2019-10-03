@@ -1,0 +1,2 @@
+commonJS modules syntax
+->> const express = require('express');
