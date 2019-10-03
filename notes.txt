@@ -1,0 +1,40 @@
+--NOTES on Scability, Latency and Throughput of servers in the context of Node.js--
+
+
+I'm doing backend differently the second time around
+--comparing some major differences between spring and Node
+--> first being concurrency, non blocking I/O
+--> Nodejs a way for us to run javascript outside of the browser
+--> Express? React for the backend (npm package)
+
+
+1) On multithreading: Each incoming request or connection the server 
+ --> spawns a new thread of execution 
+ --> or even forks a new process to handle the request and send a response. 
+ --> Conceptually, this makes perfect sense, but in practice it incurs a great deal of overhead.
+ --> spawning threads incurs less memory and CPU overhead than forking processes, it can still be inefficient
+ --> The presence of a large number of threads can cause a heavily loaded system to spend precious cycles on thread scheduling and context switching,
+ -->  which adds latency and imposes limits on scalability and throughput.
+
+ 2) On Node
+ --> We have some type of event look to handle requests
+ --> since requests spend most of their time waiting for db operations to complete, we can
+ -->  First, the RAM usage itself means you can't handle as many requests as a singlethreaded app. Spawning threads means using RAM.
+ --> In practice both approaches return data with roughly the same latency since it's the database response time that dominates the processing.
+ --> So our single-threaded app is actually leveraging the multi-threaded behaviour of another process: the database.
+ --> Don't use your server memory to buffer a massive response body, instead proxy it to the client (transfer encoding chunked sends a variable amount of data)
+ --> It can aways handle another connection, not waiting for DB
+
+ 3)
+ --> Threads vs event loops for each connection
+ --> callbacks, closures are essential to non blocking IO in Node
+ --> Modeled off of the event loop in browser JS (which uses queues with different priorities) 
+ --> Adding additional IO? is this middleware? What exactly is server IO?
+ --> How are async actionas marshalled back into the event loop? ()
+ --> https://www.youtube.com/watch?v=ztspvPYybIY
+ --> https://www.youtube.com/watch?v=jo_B4LTHi3I
+ ==> node can reference count the callbacks that are waiting for it
+
+
+ 4) Gobals
+  --> process is the big global, similar to window in browser JS
