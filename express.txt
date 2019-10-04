@@ -1,2 +1,35 @@
 commonJS modules syntax
 ->> const express = require('express');
+
+1) Using middleware
+ --> An Express application is essentially a series of middleware function calls.
+ --> Middleware functions can perform the following tasks:
+
+        ->Execute any code.
+        ->Make changes to the request and the response objects.
+        ->End the request-response cycle.
+        ->Call the next middleware function in the stack. (next())
+        ->express stack consists of an array of these types of functions
+
+2) **If the current middleware function does not end the request-response cycle, 
+    it must call next() to pass control to the next middleware function.**
+
+        -> Application level Middleware
+        -> route level middleware
+        -> Error handling middleware
+        -> Built in middleware
+        -> 3rd Party middleware
+
+3) Middleware substacks can be added to routes
+    app.get('/user/:id', function (req, res, next) {
+    console.log('ID:', req.params.id)
+    next()
+    }, function (req, res, next) {
+    res.send('User Info')
+        })
+
+    However you need to make sure to call next() after the final middleware function above, in order to make other routes are used
+    for requests
+
+4) Middleware can also be declared in an array for reusability.
+

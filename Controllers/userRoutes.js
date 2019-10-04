@@ -2,6 +2,8 @@ const express = require('express');
 const router = express.Router();
 const db = require('../data/db');
 
+//PERMISSIONS can be managed in each router file using router.all()
+
 router.get('/:id', (req,res) => {
     let id = req.params.id;
     db.findById(id).then(data => {
